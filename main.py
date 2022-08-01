@@ -1,8 +1,6 @@
 import time
-import requests
 import gspread
 
-from cookies import cookies
 import engine
 import settings
 
