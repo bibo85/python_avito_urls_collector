@@ -2,6 +2,7 @@ import time
 import requests
 from urllib.request import Request, urlopen
 from cookies import cookies
+from bs4 import BeautifulSoup
 
 
 def get_final_url(url: str):
@@ -12,7 +13,7 @@ def get_final_url(url: str):
     """
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0'})
     connection_attempts = 0
-    while connection_attempts < 5:
+    while connection_attempts < 3:
         try:
             webpage = urlopen(req, timeout=30)
             final_url = webpage.geturl()
@@ -40,7 +41,7 @@ def get_url_from_sheets(source_worksheet, col, current_row):
     connection_attempts = 0  # счетчик попыток
     url = None
     # если попыток меньше 5, то снова пробуем получить url, каждый раз спим дольше
-    while connection_attempts < 5:
+    while connection_attempts < 3:
         time.sleep(sec)
         try:
             url = source_worksheet.acell(f'{col}{current_row}').value
@@ -49,11 +50,16 @@ def get_url_from_sheets(source_worksheet, col, current_row):
             print('Не удалось получить url')
             print(f'Ошибка {exc}')
             connection_attempts += 1
-            sec += 2
+            sec += 5
     return url
 
 
-def get_page_text(url):
+def get_page_text(url: str):
+    """
+    Получаем текст страницы по url. Если не удалось получить, то возвращается None
+    :param url: ссылка на страницу
+    :return: html текст страницы. Если не удалось получить, возвращается None
+    """
     # создаем строку с cookies
     cookies_in_string = ''
     for cookie in cookies:
@@ -88,7 +94,7 @@ def get_page_text(url):
     connection_attempts = 0  # счетчик попыток
     response = None
     # если попыток меньше 5, то снова пробуем получить url, каждый раз спим дольше
-    while connection_attempts < 5:
+    while connection_attempts < 3:
         time.sleep(sec)
         try:
             response = request.get(url, timeout=30)
@@ -98,5 +104,21 @@ def get_page_text(url):
             print(f'Ошибка {exc}')
             print('Пробуем еще раз')
             connection_attempts += 1
-            sec += 3
+            sec += 5
     return response
+
+
+def html_parser(html):
+    """
+    Функция возвращает готовую ссылку на профиль пользователя
+    :param html: html код страницы объявления
+    :return: url: str - итоговая ссылка на профиль пользователя
+    """
+    soup = BeautifulSoup(html, 'html.parser')
+
+    # получаем необработанную ссылку на профиль
+    data = soup.find('a', {'class': 'EDJl6'}).attrs['href']
+    if not data:
+        return False
+    raw_link = data.split('?')[0]
+    return f'https://www.avito.ru{raw_link}'
