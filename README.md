@@ -1,1 +1,1 @@
-# python_avito_urls_collector
+Python 3.10.4
