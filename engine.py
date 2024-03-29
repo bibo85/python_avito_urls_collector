@@ -3,6 +3,7 @@ import requests
 from urllib.request import Request, urlopen
 from cookies import cookies
 from bs4 import BeautifulSoup
+from termcolor import cprint
 
 
 def get_final_url(url: str):
@@ -11,6 +12,7 @@ def get_final_url(url: str):
     :param url: ссылка с редиректом
     :return: final_url: str - конечный адрес после всех редиректов
     """
+    url = url.replace('www', 'm')
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:103.0) Gecko/20100101 Firefox/103.0'})
     connection_attempts = 0
     while connection_attempts < 3:
@@ -21,7 +23,7 @@ def get_final_url(url: str):
             return final_url
         except Exception as exc:
             print('Не удалось перейти по ссылке:', url)
-            print('Ошибка: ', exc)
+            cprint(f'Ошибка: {exc}', color='red')
             print('Пробуем еще раз')
             connection_attempts += 1
             time.sleep(5)
@@ -48,7 +50,7 @@ def get_url_from_sheets(source_worksheet, col, current_row):
             break
         except Exception as exc:
             print('Не удалось получить url')
-            print(f'Ошибка {exc}')
+            cprint(f'Ошибка: {exc}', color='red')
             connection_attempts += 1
             sec += 5
     return url
@@ -101,7 +103,7 @@ def get_page_text(url: str):
             return response.text
         except Exception as exc:
             print('Не удалось получить текст страницы: ', url)
-            print(f'Ошибка {exc}')
+            cprint(f'Ошибка: {exc}', color='red')
             print('Пробуем еще раз')
             connection_attempts += 1
             sec += 5

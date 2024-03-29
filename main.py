@@ -29,6 +29,7 @@ while True:
         # берем следующую строку, если url пустой
         if not url:
             current_row += 1
+            time.sleep(5)
             continue
 
         # Получаем конечный url после всех редиректов
@@ -37,7 +38,7 @@ while True:
         # берем следующую строку, если не удалось получить финальный url
         if not final_url:
             current_row += 1
-            time.sleep(10)
+            time.sleep(5)
             continue
 
         # заменяем www в адресе на m, переводя ссылку на мобильную версию сайта и спим
@@ -55,24 +56,25 @@ while True:
         if not html:  # если ничего не вернулось, пробуем следующую строку
             print('Не удалось получить html страницы. Пробуем следующую ссылку')
             current_row += 1
+            time.sleep(5)
             continue
 
         link_to_profile = engine.html_parser(html)
         if not link_to_profile:
             print('ОШИБКА! Не удалось получить ссылку на профиль')
             current_row += 1
-            time.sleep(10)
+            time.sleep(5)
             continue
 
         # добавляем ссылку на профиль в таблицу с результатами
         print(f'Добавляем ссылку на профиль в таблицу с результатами')
-        result_worksheet.update_cell(current_result_row, 1, link_to_profile)
+        result_worksheet.update_cell(current_row, 5, link_to_profile)
     except Exception as exc:
         print('Ошибка!')
         print(exc)
     # спим и берем следующую строку
     print('Берем следующую строку и спим')
-    time.sleep(10)
+    time.sleep(5)
     current_result_row += 1
     current_row += 1
 print('Скрипт завершил работу')
