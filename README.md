@@ -1,5 +1,12 @@
 # Сборщик ссылок на профили с товаров на Avito
 
+![Static Badge](https://img.shields.io/badge/python-3.10.4-blue)
+![Static Badge](https://img.shields.io/badge/gspread-5.4.0-green)
+![Static Badge](https://img.shields.io/badge/selenium-4.2.0-orange)
+![Static Badge](https://img.shields.io/badge/beautifulsoup4-4.11.1-yellow)
+![Static Badge](https://img.shields.io/badge/requests-2.28.1-cyan)
+![Static Badge](https://img.shields.io/badge/termcolor-2.0.1-violet)
+
 ## Описание проекта
 Скрипт позволяет получить ссылку на профиль пользователя, который выложил товар.
 
